@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+// import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export function Login({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -39,20 +39,23 @@ export function Login({ className, ...props }: UserAuthFormProps) {
       <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-b from-gray-900 via-gray-800 to-black">
         <div className="absolute top-6 left-6">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-white/90 rounded flex items-center justify-center">
-              <span className="text-black font-bold">A</span>
-            </div>
-            <span className="text-white font-semibold">Acme Inc</span>
+            {/* <div className="h-8 w-8 bg-white/90 rounded flex items-center justify-center"> */}
+            {/* <div className="p-4 h-20 w-32 rounded bg-white/90 " >
+                <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-auto mb-4" />
+              </div> */}
+            {/* <span className="text-black font-bold">A</span> */}
+            {/* </div> */}
+            {/* <span className="text-white font-semibold">Acme Inc</span> */}
           </div>
         </div>
         <div className="absolute bottom-6 left-6 right-6 text-white">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              "This library has saved me countless hours of work and helped me 
-              deliver stunning designs to my clients faster than ever before."
+              "Kaara has given us a platform with all of the power, flexibility, scalability and security we need. 
+               Implementation is also so much easier when you are with people you know and trust."
             </p>
             <footer className="text-sm">
-              Sofia Davis
+            Santrupta Das
             </footer>
           </blockquote>
         </div>
@@ -61,9 +64,12 @@ export function Login({ className, ...props }: UserAuthFormProps) {
       {/* Right Panel */}
       <div className="flex flex-col w-full lg:w-1/2">
         <div className="flex justify-end p-6">
-          <span className="text-sm font-medium">
+          <div className="p-4  " >
+            <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-auto mb-4" />
+          </div>
+          {/* <span className="text-sm font-medium">
             Login
-          </span>
+          </span> */}
         </div>
 
         <div className="flex-1 flex items-center justify-center px-6 pb-6">
@@ -130,10 +136,10 @@ export function Login({ className, ...props }: UserAuthFormProps) {
                   </svg>
                 ) : (
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 23 23">
-                    <path fill="#00a4ef" d="M11.4 24H0V12.6h11.4V24z"/>
-                    <path fill="#ff4b1f" d="M24 24H12.6V12.6H24V24z"/>
-                    <path fill="#7cbb00" d="M11.4 11.4H0V0h11.4v11.4z"/>
-                    <path fill="#ffb900" d="M24 11.4H12.6V0H24v11.4z"/>
+                    <path fill="#00a4ef" d="M11.4 24H0V12.6h11.4V24z" />
+                    <path fill="#ff4b1f" d="M24 24H12.6V12.6H24V24z" />
+                    <path fill="#7cbb00" d="M11.4 11.4H0V0h11.4v11.4z" />
+                    <path fill="#ffb900" d="M24 11.4H12.6V0H24v11.4z" />
                   </svg>
                 )}
                 Microsoft
