@@ -18,15 +18,16 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Timesheet from './pages/Timesheet';
-import { UserAuthForm } from './components/Loign';
+import { Login } from './components/Loign';
 
 const App: React.FC = () => {
+  console.log("env", import.meta.env.VITE_CLIENT_ID)
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Router>
           <Routes>
-            <Route path="/login" element={<UserAuthForm />} />
+            <Route path="/login" element={<Login />} />
             {/* <Route path="/unauthorized" element={<Unauthorized />} /> */}
             {/* <Route element={<ProtectedRoute allowedRoles={['user', 'admin']} />}> */}
               <Route path="/" element={<Layout />}>

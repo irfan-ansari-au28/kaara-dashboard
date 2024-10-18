@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks/useAuth';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function Login({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
+  const { user, loading, login, logout } = useAuth();
+  console.log(user, 'user')
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -21,6 +24,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       setIsLoading(false);
     }
   }
+
+  const handleAuth = () => {
+    if (user) {
+      logout();
+    } else {
+      login();
+    }
+  };
 
   return (
     <div className="h-screen w-full flex overflow-hidden">
@@ -107,7 +118,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </div>
               </div>
 
-              <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
+              <Button variant="outline" type="button" className="w-full" disabled={isLoading} onClick={handleAuth}>
                 {isLoading ? (
                   <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

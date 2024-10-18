@@ -16,10 +16,7 @@ interface SidebarItem {
 }
 
 const userSidebarItems: SidebarItem[] = [
-    {
-        title: 'Timesheet',
-        path: '/timesheet',
-    },
+ 
     {
         title: 'Dashboard',
         path: '/dashboard',
@@ -27,6 +24,10 @@ const userSidebarItems: SidebarItem[] = [
             { title: 'Overview', path: '/dashboard/overview' },
             { title: 'Analytics', path: '/dashboard/analytics' },
         ],
+    },
+    {
+        title: 'Timesheet',
+        path: '/timesheet',
     },
 
     // Add more user items here
@@ -57,7 +58,11 @@ const Sidebar: React.FC = () => {
     return (
         <ScrollArea className="w-64 h-screen bg-secondary">
             <div className="p-4">
-                <h1 className="text-2xl font-bold mb-4">Kaara</h1>
+                <div className="p-4">
+                    <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-auto mb-4" />
+                </div>
+
+                {/* <h1 className="text-2xl font-bold mb-4">Kaara</h1> */}
                 <Accordion type="single" collapsible>
                     {sidebarItems.map((item, index) => (
                         item.subitems ? (
