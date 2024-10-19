@@ -64,15 +64,15 @@ export function Login({ className, ...props }: UserAuthFormProps) {
       {/* Right Panel */}
       <div className="flex flex-col w-full lg:w-1/2">
         <div className="flex justify-end p-6">
-          <div className="p-4  " >
-            <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-auto mb-4" />
+          <div className="p-2  " >
+            <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-24 mb-4" />
           </div>
           {/* <span className="text-sm font-medium">
             Login
           </span> */}
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-6 pb-6">
+        <div className="flex-1 flex items-center justify-center px-6 pb-40">
           <div className="w-full max-w-sm space-y-5">
             <div className="flex flex-col text-center space-y-2">
               <h1 className="text-2xl font-semibold tracking-tight">
