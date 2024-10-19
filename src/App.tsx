@@ -1,7 +1,7 @@
 
 import './App.css'
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from './components/mode-toggle'
+import { ModeToggle } from './components/ModeToggle'
 
 
 import React from 'react';
@@ -17,8 +17,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 // import Unauthorized from './pages/Unauthorized';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
-import Timesheet from './pages/Timesheet';
 import { Login } from './components/Loign';
+import TimesheetPage from './pages/TimesheetPage';
 
 const App: React.FC = () => {
   console.log("env", import.meta.env.VITE_CLIENT_ID)
@@ -32,7 +32,7 @@ const App: React.FC = () => {
             {/* <Route element={<ProtectedRoute allowedRoles={['user', 'admin']} />}> */}
               <Route path="/" element={<Layout />}>
                 <Route index element={<Navigate to="/timesheet" replace />} />
-                <Route path="timesheet" element={<Timesheet />} />
+                <Route path="timesheet" element={<TimesheetPage />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
               </Route>
             {/* </Route> */}

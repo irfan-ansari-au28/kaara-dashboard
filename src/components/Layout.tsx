@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { ModeToggle } from './mode-toggle';
+import { ModeToggle } from './ModeToggle';
 import { Button } from "@/components/ui/button"
 import { useAuth } from '@/hooks/useAuth';
 
