@@ -4,6 +4,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface TimeEntry {
   Date: string;
@@ -22,7 +26,7 @@ interface TimesheetData {
   timeSheetEntries: ProjectEntry[];
 }
 
-// Updated sample data with full week and multiple projects
+// Sample data remains the same
 const sampleData: TimesheetData = {
   "EmployeeId": "KAR2490",
   "timeSheetEntries": [
@@ -71,8 +75,63 @@ const sampleData: TimesheetData = {
   ]
 };
 
+interface EditDialogProps {
+  entry?: TimeEntry;
+  date: Date;
+  projectName: string;
+  onSave: (hours: number, remark: string) => void;
+}
+
+function EditDialog({ entry, date, projectName, onSave }: EditDialogProps) {
+  const [hours, setHours] = useState(entry?.hour || 0);
+  const [remark, setRemark] = useState(entry?.remark || '');
+
+  return (
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>
+          {entry ? 'Edit Timesheet Entry' : 'Add Timesheet Entry'}
+        </DialogTitle>
+      </DialogHeader>
+      <div className="grid gap-4 py-4">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Date: {format(date, 'PPP')}</p>
+          <p className="text-sm font-medium">Project: {projectName}</p>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Hours</label>
+          <Select value={hours.toString()} onValueChange={(value) => setHours(Number(value))}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select hours" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...Array(13)].map((_, i) => (
+                <SelectItem key={i} value={i.toString()}>
+                  {i} hours
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Remarks</label>
+          <Textarea
+            value={remark}
+            onChange={(e) => setRemark(e.target.value)}
+            placeholder="Enter remarks"
+          />
+        </div>
+        <Button onClick={() => onSave(hours, remark)}>
+          Save Entry
+        </Button>
+      </div>
+    </DialogContent>
+  );
+}
+
 export function WeeklyTimesheet() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [timesheet, setTimesheet] = useState(sampleData);
   
   const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = [...Array(7)].map((_, i) => addDays(startOfCurrentWeek, i));
@@ -85,6 +144,31 @@ export function WeeklyTimesheet() {
     return projectEntries.find(entry => 
       isSameDay(new Date(entry.Date), date)
     );
+  };
+
+  const handleSaveEntry = (projectId: string, date: Date, hours: number, remark: string) => {
+    setTimesheet(prev => {
+      const newTimesheet = { ...prev };
+      const project = newTimesheet.timeSheetEntries.find(p => p.projectID === projectId);
+      if (project) {
+        const existingEntryIndex = project.entries.findIndex(e => 
+          isSameDay(new Date(e.Date), date)
+        );
+        
+        const newEntry = {
+          Date: format(date, 'yyyy-MM-dd'),
+          hour: hours,
+          remark
+        };
+
+        if (existingEntryIndex >= 0) {
+          project.entries[existingEntryIndex] = newEntry;
+        } else {
+          project.entries.push(newEntry);
+        }
+      }
+      return newTimesheet;
+    });
   };
 
   return (
@@ -114,7 +198,6 @@ export function WeeklyTimesheet() {
 
       <ScrollArea className="h-[calc(100vh-12rem)] rounded-md border">
         <div className="min-w-[1000px]">
-          {/* Header */}
           <div className="grid grid-cols-8 bg-muted p-4 sticky top-0 z-10">
             <div className="font-semibold">Project</div>
             {weekDays.map((day, index) => (
@@ -125,9 +208,8 @@ export function WeeklyTimesheet() {
             ))}
           </div>
 
-          {/* Project Rows */}
           <div className="divide-y">
-            {sampleData.timeSheetEntries.map((project, projectIndex) => (
+            {timesheet.timeSheetEntries.map((project, projectIndex) => (
               <div key={projectIndex} className="grid grid-cols-8 hover:bg-muted/50">
                 <div className="p-4 flex flex-col">
                   <span className="font-medium">{project.projectName}</span>
@@ -137,22 +219,43 @@ export function WeeklyTimesheet() {
                   const entry = getEntryForDate(project.entries, day);
                   return (
                     <div key={dayIndex} className="p-2 border-l">
-                      <Card className="h-full">
-                        <CardContent className="p-3 space-y-1">
-                          {entry ? (
-                            <>
-                              <div className="font-medium">{entry.hour} hrs</div>
-                              <div className="text-sm text-muted-foreground line-clamp-2">
-                                {entry.remark}
-                              </div>
-                            </>
-                          ) : (
-                            <div className="flex items-center justify-center h-full text-muted-foreground">
-                              N/A
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Card className={`h-full cursor-pointer transition-colors ${
+                            entry ? (entry.hour >= 8 ? 'border-green-200' : 'border-red-200') : ''
+                          }`}>
+                            <CardContent className="p-3 space-y-1">
+                              {entry ? (
+                                <>
+                                  <div className="font-medium">{entry.hour} hrs</div>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger>
+                                        <div className="text-sm text-muted-foreground line-clamp-2">
+                                          {entry.remark}
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p className="max-w-xs">{entry.remark}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                </>
+                              ) : (
+                                <div className="flex items-center justify-center h-full text-muted-foreground">
+                                  N/A
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </DialogTrigger>
+                        <EditDialog
+                          entry={entry}
+                          date={day}
+                          projectName={project.projectName}
+                          onSave={(hours, remark) => handleSaveEntry(project.projectID, day, hours, remark)}
+                        />
+                      </Dialog>
                     </div>
                   );
                 })}
