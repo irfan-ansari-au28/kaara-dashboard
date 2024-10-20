@@ -3,17 +3,12 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { ModeToggle } from './ModeToggle';
 import { Button } from "@/components/ui/button"
-import { useAuth } from '@/hooks/useAuth';
 
 const Layout: React.FC = () => {
-  const { user, loading, login, logout } = useAuth();
+  const user = ""
 
   const handleAuth = async () => {
-    if (user) {
-      await logout();
-    } else {
-      await login();
-    }
+    console.log("MS Logout")
   };
 
   return (
@@ -23,7 +18,7 @@ const Layout: React.FC = () => {
         <header className="p-4 bg-secondary flex justify-between items-center">
           <div></div>
           <div className="flex items-center justify-between space-x-4">
-            <span>👋🏻 Welcome, {user?.name} </span>
+            <span>👋🏻 Welcome, {user|| "John"} </span>
             <Button variant="outline" onClick={handleAuth}>Logout</Button>
             <ModeToggle />
           </div>

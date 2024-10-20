@@ -2,15 +2,12 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 // import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/useAuth';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export function Login({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
-  const { user, loading, login, logout } = useAuth();
-  console.log(user, 'user')
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -26,11 +23,7 @@ export function Login({ className, ...props }: UserAuthFormProps) {
   }
 
   const handleAuth = () => {
-    if (user) {
-      logout();
-    } else {
-      login();
-    }
+    console.log("MS Login")
   };
 
   return (
