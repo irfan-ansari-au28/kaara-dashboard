@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 // import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '@/config/authConfig';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
@@ -22,9 +24,16 @@ export function Login({ className, ...props }: UserAuthFormProps) {
     }
   }
 
-  const handleAuth = () => {
+  const { instance } = useMsal();
+
+  const handleLogin = () => {
     console.log("MS Login")
+      instance.loginRedirect(loginRequest).catch(e => {
+          console.error(e);
+      });
   };
+
+
 
   return (
     <div className="h-screen w-full flex overflow-hidden">
@@ -117,7 +126,7 @@ export function Login({ className, ...props }: UserAuthFormProps) {
                 </div>
               </div>
 
-              <Button variant="outline" type="button" className="w-full" disabled={isLoading} onClick={handleAuth}>
+              <Button variant="outline" type="button" className="w-full" disabled={isLoading} onClick={handleLogin}>
                 {isLoading ? (
                   <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

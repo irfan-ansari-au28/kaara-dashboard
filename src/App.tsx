@@ -1,14 +1,10 @@
 
 import './App.css'
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from './components/ModeToggle'
 
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './components/theme/theme-provider';
 import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
 // import Layout from './components/Layout';
 // import Dashboard from './pages/Dashboard';
 // import AdminDashboard from './pages/AdminDashboard';
@@ -17,21 +13,48 @@ import ProtectedRoute from './components/ProtectedRoute';
 // import Unauthorized from './pages/Unauthorized';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
-import { Login } from './components/Loign';
+import { Login } from './components/Login';
 import TimesheetPage from './pages/TimesheetPage';
+import { useIsAuthenticated, useMsal } from '@azure/msal-react';
+import { InteractionStatus } from '@azure/msal-browser';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
 
 const App: React.FC = () => {
   console.log("env", import.meta.env.VITE_CLIENT_ID)
+  const { accounts, inProgress } = useMsal()
+  const isAuthenticated = useIsAuthenticated();
+  const [isLoading, setIsLoading] = useState(true)
+  console.log(accounts)
+
+  useEffect(() => {
+    // Set loading to false once the initial auth check is complete
+    if (inProgress === InteractionStatus.None) {
+      setIsLoading(false)
+    }
+  }, [inProgress])
+
+  // Show loading spinner during initial load or auth interactions
+  if (isLoading || inProgress !== InteractionStatus.None) {
+    return (
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <LoadingSpinner />
+      </ThemeProvider>
+    )
+  }
+
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Router>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
+            />
+            {/* <Route path="/" element={isAuthenticated ? <Layout /> : <Login />} /> */}
             {/* <Route path="/unauthorized" element={<Unauthorized />} /> */}
             {/* <Route element={<ProtectedRoute allowedRoles={['user', 'admin']} />}> */}
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Navigate to="/timesheet" replace />} />
+            <Route path="/" element={isAuthenticated ? <Layout /> : <Login />}>
+                <Route index element={<Navigate to="/timesheet"  />} />
                 <Route path="timesheet" element={<TimesheetPage />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
               </Route>
