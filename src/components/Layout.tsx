@@ -1,20 +1,21 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { ModeToggle } from './mode-toggle';
+import { ModeToggle } from './ModeToggle';
 import { Button } from "@/components/ui/button"
-import { useAuth } from '@/hooks/useAuth';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '@/config/authConfig';
 
 const Layout: React.FC = () => {
-  const { user, loading, login, logout } = useAuth();
+  const { instance, accounts } = useMsal();
 
-  const handleAuth = async () => {
-    if (user) {
-      await logout();
-    } else {
-      await login();
-    }
+  const handleLogout = () => {
+    console.log("MS Logout")
+    instance.logoutRedirect({
+      postLogoutRedirectUri: "/",
+    });
   };
+
 
   return (
     <div className="flex h-screen bg-background text-foreground">
@@ -23,8 +24,8 @@ const Layout: React.FC = () => {
         <header className="p-4 bg-secondary flex justify-between items-center">
           <div></div>
           <div className="flex items-center justify-between space-x-4">
-            <span>👋🏻 Welcome, {user?.name} </span>
-            <Button variant="outline" onClick={handleAuth}>Logout</Button>
+            <span>👋🏻 Welcome, {accounts?.[0]?.name || "John"} </span>
+            <Button variant="outline" onClick={handleLogout}>Logout</Button>
             <ModeToggle />
           </div>
         </header>

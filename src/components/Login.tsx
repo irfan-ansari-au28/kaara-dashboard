@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 // import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/useAuth';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '@/config/authConfig';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export function Login({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
-  const { user, loading, login, logout } = useAuth();
-  console.log(user, 'user')
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -25,13 +24,16 @@ export function Login({ className, ...props }: UserAuthFormProps) {
     }
   }
 
-  const handleAuth = () => {
-    if (user) {
-      logout();
-    } else {
-      login();
-    }
+  const { instance } = useMsal();
+
+  const handleLogin = () => {
+    console.log("MS Login")
+      instance.loginRedirect(loginRequest).catch(e => {
+          console.error(e);
+      });
   };
+
+
 
   return (
     <div className="h-screen w-full flex overflow-hidden">
@@ -64,15 +66,15 @@ export function Login({ className, ...props }: UserAuthFormProps) {
       {/* Right Panel */}
       <div className="flex flex-col w-full lg:w-1/2">
         <div className="flex justify-end p-6">
-          <div className="p-4  " >
-            <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-auto mb-4" />
+          <div className="p-2  " >
+            <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-24 mb-4" />
           </div>
           {/* <span className="text-sm font-medium">
             Login
           </span> */}
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-6 pb-6">
+        <div className="flex-1 flex items-center justify-center px-6 pb-40">
           <div className="w-full max-w-sm space-y-5">
             <div className="flex flex-col text-center space-y-2">
               <h1 className="text-2xl font-semibold tracking-tight">
@@ -124,7 +126,7 @@ export function Login({ className, ...props }: UserAuthFormProps) {
                 </div>
               </div>
 
-              <Button variant="outline" type="button" className="w-full" disabled={isLoading} onClick={handleAuth}>
+              <Button variant="outline" type="button" className="w-full" disabled={isLoading} onClick={handleLogin}>
                 {isLoading ? (
                   <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

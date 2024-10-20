@@ -58,8 +58,8 @@ const Sidebar: React.FC = () => {
     return (
         <ScrollArea className="w-64 h-screen bg-secondary">
             <div className="p-4">
-                <div className="p-4">
-                    <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-auto mb-4" />
+                <div className="p-2">
+                    <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-24  mb-4" />
                 </div>
 
                 {/* <h1 className="text-2xl font-bold mb-4">Kaara</h1> */}
