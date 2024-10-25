@@ -132,7 +132,7 @@ function EditDialog({ entry, date, projectName, onSave }: EditDialogProps) {
 export function WeeklyTimesheet() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [timesheet, setTimesheet] = useState(sampleData);
-  
+
   const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = [...Array(7)].map((_, i) => addDays(startOfCurrentWeek, i));
 
@@ -141,7 +141,7 @@ export function WeeklyTimesheet() {
   };
 
   const getEntryForDate = (projectEntries: TimeEntry[], date: Date) => {
-    return projectEntries.find(entry => 
+    return projectEntries.find(entry =>
       isSameDay(new Date(entry.Date), date)
     );
   };
@@ -151,10 +151,10 @@ export function WeeklyTimesheet() {
       const newTimesheet = { ...prev };
       const project = newTimesheet.timeSheetEntries.find(p => p.projectID === projectId);
       if (project) {
-        const existingEntryIndex = project.entries.findIndex(e => 
+        const existingEntryIndex = project.entries.findIndex(e =>
           isSameDay(new Date(e.Date), date)
         );
-        
+
         const newEntry = {
           Date: format(date, 'yyyy-MM-dd'),
           hour: hours,
@@ -174,8 +174,8 @@ export function WeeklyTimesheet() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-0 sm:px-4">
-        <h2        
-        className='font-bold text-[12px] md:text-[14px] lg:text-[24px] xl:text-[24px]'>
+        <h2
+          className='font-bold text-[12px] md:text-[14px] lg:text-[24px] xl:text-[24px]'>
           Weekly Timesheet</h2>
         <div className="flex items-center gap-1 sm:gap-4">
           <Button
@@ -200,76 +200,75 @@ export function WeeklyTimesheet() {
         </div>
       </div>
 
-        <ScrollArea >
-  <div className="h-[calc(100vh-12rem)] w-auto sm:w-[300px] md:w-auto rounded-md border overflow-x-auto">
-  <div className="min-w-[900px] sm:min-w-[950px] lg:min-w-[1000px] ">
-      <div className="grid grid-cols-8 bg-muted p-4 sticky top-0 z-10 pt-3 pb-3 sm:pt-4 sm:pb-4 ">
-        <div className="text-[12px] font-semibold flex items-center sm:flex-none sm:items-start md:text-[14px] lg:text-[16px] xl:text-[16px]">Project</div>
-        {weekDays.map((day, index) => (
-          <div key={index} className="text-[12px] font-semibold text-center md:text-[14px] lg:text-[16px] xl:text-[16px]">
-            {format(day, 'EEE')}<br />
-            {format(day, 'MMM d')}
-          </div>
-        ))}
-      </div>
-
-      <div className="divide-y">
-        {timesheet.timeSheetEntries.map((project, projectIndex) => (
-          <div key={projectIndex} className="grid grid-cols-8 hover:bg-muted/50">
-                <div className='p-3 md:p-2 lg:p-4 flex flex-col'>
-              <span className="font-medium text-xs sm:text-sm leading-3 sm:leading-normal md:text-[14px] md:leading-normal">{project.projectName}</span>
-              <span className="text-xs md:text-sm text-muted-foreground ">{project.projectID}</span>
-            </div>
-            {weekDays.map((day, dayIndex) => {
-              const entry = getEntryForDate(project.entries, day);
-              return (
-                <div key={dayIndex} className="p-2 border-l">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Card className={`h-full cursor-pointer transition-colors ${
-                        entry ? (entry.hour >= 8 ? 'border-green-200' : 'border-red-200') : ''
-                      }`}>
-                        <CardContent className="p-3 space-y-1">
-                          {entry ? (
-                            <>
-                              <div className="font-medium text-sm md:text-base">{entry.hour} hrs</div>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <div className="text-xs md:text-sm text-muted-foreground line-clamp-2">
-                                      {entry.remark}
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p className="max-w-xs">{entry.remark}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </>
-                          ) : (
-                            <div className='flex items-center justify-center h-full text-xs sm:text-sm md:text-base text-muted-foreground'>
-                              N/A
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </DialogTrigger>
-                    <EditDialog
-                      entry={entry}
-                      date={day}
-                      projectName={project.projectName}
-                      onSave={(hours, remark) => handleSaveEntry(project.projectID, day, hours, remark)}
-                    />
-                  </Dialog>
+      <ScrollArea >
+        <div className="h-[calc(100vh-12rem)] w-auto sm:w-[300px] md:w-auto rounded-md border overflow-x-auto">
+          <div className="min-w-[900px] sm:min-w-[950px] lg:min-w-[1000px] ">
+            <div className="grid grid-cols-8 bg-muted p-4 sticky top-0 z-10 pt-3 pb-3 sm:pt-4 sm:pb-4 ">
+              <div className="text-[12px] font-semibold flex items-center sm:flex-none sm:items-start md:text-[14px] lg:text-[16px] xl:text-[16px]">Project</div>
+              {weekDays.map((day, index) => (
+                <div key={index} className="text-[12px] font-semibold text-center md:text-[14px] lg:text-[16px] xl:text-[16px]">
+                  {format(day, 'EEE')}<br />
+                  {format(day, 'MMM d')}
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            <div className="divide-y">
+              {timesheet.timeSheetEntries.map((project, projectIndex) => (
+                <div key={projectIndex} className="grid grid-cols-8 hover:bg-muted/50">
+                  <div className='p-3 md:p-2 lg:p-4 flex flex-col'>
+                    <span className="font-medium text-xs sm:text-sm leading-3 sm:leading-normal md:text-[14px] md:leading-normal">{project.projectName}</span>
+                    <span className="text-xs md:text-sm text-muted-foreground ">{project.projectID}</span>
+                  </div>
+                  {weekDays.map((day, dayIndex) => {
+                    const entry = getEntryForDate(project.entries, day);
+                    return (
+                      <div key={dayIndex} className="p-2 border-l">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Card className={`h-full cursor-pointer transition-colors ${entry ? (entry.hour >= 8 ? 'border-green-200' : 'border-red-200') : ''
+                              }`}>
+                              <CardContent className="p-3 space-y-1">
+                                {entry ? (
+                                  <>
+                                    <div className="font-medium text-sm md:text-base">{entry.hour} hrs</div>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger>
+                                          <div className="text-xs md:text-sm text-muted-foreground line-clamp-2">
+                                            {entry.remark}
+                                          </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p className="max-w-xs">{entry.remark}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </>
+                                ) : (
+                                  <div className='flex items-center justify-center h-full text-xs sm:text-sm md:text-base text-muted-foreground'>
+                                    N/A
+                                  </div>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </DialogTrigger>
+                          <EditDialog
+                            entry={entry}
+                            date={day}
+                            projectName={project.projectName}
+                            onSave={(hours, remark) => handleSaveEntry(project.projectID, day, hours, remark)}
+                          />
+                        </Dialog>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-        </ScrollArea>
+        </div>
+      </ScrollArea>
     </div>
   );
 }

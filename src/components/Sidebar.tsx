@@ -20,7 +20,7 @@ interface SidebarItem {
 }
 
 const userSidebarItems: SidebarItem[] = [
- 
+
     {
         title: 'Dashboard',
         path: '/dashboard',
@@ -61,23 +61,23 @@ const Sidebar: React.FC<{ toggleDrawer: () => void }> = ({ toggleDrawer }) => {
     const { instance } = useMsal();
 
     const handleLogout = () => {
-    console.log("MS Logout")
-    instance.logoutRedirect({
-      postLogoutRedirectUri: "/",
-    });
-  };
+        console.log("MS Logout")
+        instance.logoutRedirect({
+            postLogoutRedirectUri: "/",
+        });
+    };
 
     return (
         <ScrollArea className="w-64 h-screen bg-secondary">
             <div className="p-4">
                 <div className="p-2">
                     <div className='flex items-center justify-between'>
-                    <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-24  mb-4" />
-                        <div className="block md:hidden">     
-                    <button className='' onClick={toggleDrawer}>
-                    <Cross2Icon className="w-4 h-4 mr-2" />
-                    </button>                    
-                    </div>
+                        <img src="/src/assets/images/kaara-logo.png" alt="Kaara Logo" className="w-24  mb-4" />
+                        <div className="block md:hidden">
+                            <button className='' onClick={toggleDrawer}>
+                                <Cross2Icon className="w-4 h-4 mr-2" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -93,8 +93,8 @@ const Sidebar: React.FC<{ toggleDrawer: () => void }> = ({ toggleDrawer }) => {
                                             key={subIndex}
                                             to={subitem.path}
                                             className={`block py-2 px-4 ${location.pathname === subitem.path ? 'bg-primary text-primary-foreground' : ''
-                                            }`}
-                                            onClick={toggleDrawer} 
+                                                }`}
+                                            onClick={toggleDrawer}
                                         >
                                             {subitem.title}
                                         </Link>
@@ -106,8 +106,8 @@ const Sidebar: React.FC<{ toggleDrawer: () => void }> = ({ toggleDrawer }) => {
                                 key={index}
                                 to={item.path}
                                 className={`block py-2 px-4 mb-2 ${location.pathname === item.path ? 'bg-primary text-primary-foreground' : ''
-                                }`}
-                                onClick={toggleDrawer} 
+                                    }`}
+                                onClick={toggleDrawer}
                             >
                                 {item.title}
                             </Link>
@@ -115,12 +115,12 @@ const Sidebar: React.FC<{ toggleDrawer: () => void }> = ({ toggleDrawer }) => {
                     ))}
                 </Accordion>
             </div>
-            <div className="p-2  mr-6 flex flex-col items-left absolute space-x-0 bottom-8 block md:hidden">                 
-                 <div className="flex items-center space-x-32 mt-2">
+            <div className="p-2  mr-6 flex flex-col items-left absolute space-x-0 bottom-8 block md:hidden">
+                <div className="flex items-center space-x-32 mt-2">
                     <Button variant="outline" onClick={handleLogout} >Logout</Button>
                     <ModeToggle />
-            </div>      
-        </div>
+                </div>
+            </div>
         </ScrollArea>
     );
 };
