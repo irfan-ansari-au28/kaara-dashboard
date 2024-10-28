@@ -85,9 +85,18 @@ interface EditDialogProps {
 function EditDialog({ entry, date, projectName, onSave }: EditDialogProps) {
   const [hours, setHours] = useState(entry?.hour || 0);
   const [remark, setRemark] = useState(entry?.remark || '');
+  const [isLeave, setIsLeave] = useState(false);
+  const handleCheckboxChange = () => {
+    setIsLeave(!isLeave);
+    if (!isLeave) {
+      setRemark("I am on leave for today.");
+    } else {
+      setRemark("");
+    }
+  };
 
   return (
-    <DialogContent className="sm:max-w-[425px]">
+    <DialogContent className="sm:max-w-[425px] w-[300px] sm:w-[425px] text-[12px] rounded-lg">
       <DialogHeader>
         <DialogTitle>
           {entry ? 'Edit Timesheet Entry' : 'Add Timesheet Entry'}
@@ -95,11 +104,23 @@ function EditDialog({ entry, date, projectName, onSave }: EditDialogProps) {
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="space-y-2">
-          <p className="text-sm font-medium">Date: {format(date, 'PPP')}</p>
-          <p className="text-sm font-medium">Project: {projectName}</p>
+          <p className="font-medium text-[12px] sm:text-[14px]">Date: {format(date, 'PPP')}</p>
+          <p className="text-[12px] sm:text-[14px] font-medium">Project: {projectName}</p>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="markAsLeave"
+              className="mr-2"
+              checked={isLeave}
+              onChange={handleCheckboxChange}
+            />
+            <label htmlFor="markAsLeave" className="text-[12px] sm:text-[14px] font-medium">
+              Mark as Leave
+            </label>
+          </div>
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Hours</label>
+          <label className="text-[12px] sm:text-[14px] font-medium">Hours</label>
           <Select value={hours.toString()} onValueChange={(value) => setHours(Number(value))}>
             <SelectTrigger>
               <SelectValue placeholder="Select hours" />
@@ -167,6 +188,32 @@ export function WeeklyTimesheet() {
           project.entries.push(newEntry);
         }
       }
+
+      const data = {
+        projectId: projectId,
+        date: format(date, 'yyyy-MM-dd'), 
+        hours,
+        remark,
+      };
+
+      const res = localStorage.getItem('Data');
+      let parsedArray: any[] = [];
+
+      if (res) {
+        parsedArray = JSON.parse(res);
+      }
+
+      const indexToUpdate = parsedArray.findIndex((item: any) =>
+        item.date === data.date && item.projectId === data.projectId
+      );
+
+      if (indexToUpdate !== -1) {
+        parsedArray[indexToUpdate].hours = data.hours;
+        parsedArray[indexToUpdate].remark = data.remark;
+      } else {
+        parsedArray.push(data);
+      }
+      localStorage.setItem('Data', JSON.stringify(parsedArray));
       return newTimesheet;
     });
   };
@@ -222,6 +269,8 @@ export function WeeklyTimesheet() {
                   </div>
                   {weekDays.map((day, dayIndex) => {
                     const entry = getEntryForDate(project.entries, day);
+                    const isLeaveEntry =
+                      entry && entry.remark === "I am on leave for today.";
                     return (
                       <div key={dayIndex} className="p-2 border-l">
                         <Dialog>
@@ -231,12 +280,22 @@ export function WeeklyTimesheet() {
                               <CardContent className="p-3 space-y-1">
                                 {entry ? (
                                   <>
-                                    <div className="font-medium text-sm md:text-base">{entry.hour} hrs</div>
+                                    <div
+                                      className={`text-sm font-medium ${isLeaveEntry ? "text-red-500" : ""}`}
+                                    >
+                                      {entry.hour} hrs
+                                    </div>
                                     <TooltipProvider>
                                       <Tooltip>
                                         <TooltipTrigger>
-                                          <div className="text-xs md:text-sm text-muted-foreground line-clamp-2">
-                                            {entry.remark}
+                                          <div className="flex justify-center items-center text-sm text-muted-foreground line-clamp-2">
+                                            {isLeaveEntry ? (
+                                              <span className="text-red-500 text-[16px] p-1 rounded ml-[35px]">
+                                                A
+                                              </span>
+                                            ) : (
+                                              `${entry.remark} `
+                                            )}
                                           </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
