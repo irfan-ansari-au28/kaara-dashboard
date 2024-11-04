@@ -27,6 +27,7 @@ const userSidebarItems: SidebarItem[] = [
         subitems: [
             { title: 'Overview', path: '/dashboard/overview' },
             { title: 'Analytics', path: '/dashboard/analytics' },
+            { title: 'Leave', path: '/dashboard/leave' },
         ],
     },
     {
